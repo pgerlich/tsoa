@@ -892,7 +892,7 @@ export class TypeResolver {
       .replace(/&/g, '-and-')
       .replace(/\|/g, '-or-')
       .replace(/\[\]/g, '-Array')
-      .replace(/{|}/g, '_') // SuccessResponse_{indexesCreated-number}_ -> SuccessResponse__indexesCreated-number__
+      .replace(/{(|})/g, '_') // SuccessResponse_{indexesCreated-number}_ -> SuccessResponse__indexesCreated-number__
       .replace(/([a-z_0-9]+\??):([a-z]+)/gi, '$1-$2') // SuccessResponse_indexesCreated:number_ -> SuccessResponse_indexesCreated-number_
       .replace(/;/g, '--')
       .replace(/([a-z})\]])\[([a-z]+)\]/gi, '$1-at-$2'); // Partial_SerializedDatasourceWithVersion[format]_ -> Partial_SerializedDatasourceWithVersion~format~_,
@@ -961,6 +961,7 @@ export class TypeResolver {
         return modelType.getSourceFile().fileName.replace(/\\/g, '/').toLowerCase().indexOf('node_modules/typescript') <= -1;
       });
 
+      // Fix: Ensure only one model is marked with @tsoaModel
       modelTypes = this.getDesignatedModels(modelTypes, typeName);
     }
 
